@@ -1,0 +1,50 @@
+clc
+close all
+clear 
+
+syms lambda_1 c_1 T_d h_1 d_A d_L_1
+% Assign numerical values to the parameters
+lambda_1_num = 20000;
+c_1_num = 0.0321;
+T_d_num = 58.965;
+d_A_num = 0.1071;
+d_L_1_num = 0.3493;
+h_1_num = 10000;
+
+
+R0 = (c_1 * T_d * lambda_1) / ((d_A + d_L_1) * (lambda_1 + h_1 * d_A));
+
+
+params = {'lambda_1', 'c_1', 'T_d', 'h_1', 'd_A', 'd_L_1'};
+param_values = [lambda_1_num, c_1_num, T_d_num, h_1_num, d_A_num, d_L_1_num];
+
+
+sensitivities = zeros(size(params));
+
+
+for i = 1:length(params)
+    param_name = params{i};
+    
+    
+    dR0dparam = diff(R0, sym(param_name));
+    sen = (dR0dparam * sym(param_name)) / R0;
+    sensitivity_numerical = subs(sen, {lambda_1, h_1, d_A, d_L_1}, {lambda_1_num, h_1_num, d_A_num, d_L_1_num});
+    
+    
+    sensitivities(i) = double(sensitivity_numerical);
+    
+    % Display the sensitivity
+    disp(['Sensitivity of R0 with respect to ', param_name, ': ', num2str(sensitivities(i))]);
+    
+end
+
+
+figure;
+bar(sensitivities);
+xlabel('Parameters');
+ylabel('Sensitivity Analysis');
+
+
+xticks(1:length(params));
+xticklabels({'\lambda_1', 'c_1', 'T_d', 'h_1', 'd_A', 'd_L_1'});
+
