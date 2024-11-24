@@ -1,0 +1,41 @@
+clear
+close all
+clc
+
+D=[0.00021 .00028 .00034 0.00038];
+colors = {'green', 'black','blue','red'};
+
+for i=1:length(D)
+lambda1=20000;
+a = 0.035;
+b = 10000;
+lambda2=500;
+c = .09;
+e = 2500000;
+r = .43;
+m = .00136;
+j = 0.2;
+k = 59;
+l=0.37;
+d = D(i);
+
+f=@(t,x) [lambda1-(a.*k*x(1).*x(2))./(x(1)+b)-c.*x(1);
+    a.*k*x(1).*(x(2))./(x(1)+b)-c.*x(2)-j.*x(2);
+    lambda2-(d.*k*x(2).*x(3))./(x(3)+e)+r.*x(4)-m.*x(3);
+    d.*k*x(2).*(x(3))./(x(3)+e)-(r+m+l).*x(4)];
+
+    xt0 = [200000,4000, 80,1];
+opts = odeset('RelTol',1e-10,'AbsTol',1e-12);
+[t,xt]=ode45(f,tspan, xt0);
+
+plot(t,xt(:,4),'LineWidth',2.3,'Color',colors{i})
+set(gca,'XTick',[],'XGrid', 'off','YGrid', 'off')
+
+title('Dynamics of leptospirosis w.r.t. c_2')
+xlabel('Time')
+ylabel('Infected humans')
+grid on
+hold on
+
+end
+legend('c_2=0.00021', 'c_2=0.00028','c_2= 0.00034','c_2=0.00038')
