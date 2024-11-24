@@ -1,0 +1,13 @@
+clear
+close all
+clc
+
+t1 = 1:12; 
+data = [0 0 0 1 1 0 10 51 45 3 6 6]; 
+figure;
+plot(t1,data,'-ks','LineWidth',2)
+xlabel('Month (2012)');
+ylabel('Infected humans');
+
+xticks(1:12);
+xticklabels({'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'});
