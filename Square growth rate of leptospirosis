@@ -1,0 +1,39 @@
+clc
+close all
+clear
+
+% Define the constants
+T_min = 7.1;
+T_max = 34;
+alpha = 3.3940;
+beta = 0.3458;
+
+% Given values of T for one year (12 months)
+T_year = [22.5 24.15 27.3 29.55 30.7 29.7 27.55 27 27.55 28.3 26.85 24.1];
+
+
+[month_grid, T_grid] = meshgrid(1:12, T_year);
+
+Td_grid = ((alpha) * (T_grid - T_min) ).* (1 - exp(beta * (T_grid - T_max)));
+
+
+colormap_month = [repmat([0.2 0.9 0.3], 5, 1); repmat([0.7 0.15 0.15], 6, 1); 1 1 0.7];
+
+
+figure;
+surf(T_grid, month_grid, Td_grid, 'FaceColor', 'interp');
+xlabel('T');
+ylabel('Month');
+zlabel('T_d');
+
+grid on;
+
+
+view(45, 30);
+
+
+colormap(colormap_month);
+
+
+colorbar;
+
