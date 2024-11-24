@@ -1,0 +1,84 @@
+clear
+close all
+clc
+
+p=0.335; b = 10000; c = .19; e = 2500000; k=60; r = .43; m = .00136; d=0.00035;l=0.39;
+ lambda1=20000;lambda2=500;
+A=0.0092:.00001:.0101;
+for j=1:length(A)
+a=A(j)
+%Function
+syms x1 x2 y1 y2
+f1=lambda1-(a*k*x1*x2)/(x1+b)-(c)*x1;
+f2=(a*k*x1*x2)/(x1+b)-(c+p)*x2;
+g1=lambda2-(d*k*x2*y1)/(y1+e)+r*y2-m*y1;
+g2=(d*k*x2*y1)/(y1+e)-(r+m+l)*y2;
+z=(a*lambda1*k)/((c+p)*(b*c+lambda1))
+%G=((NH + e)*(r + m + l))/(d*k*NH)
+
+%Fixed Points
+[sol_x1,sol_x2,sol_y1,sol_y2]=solve(f1,f2,g1,g2,x1,x2,y1,y2);
+disp(vpa([sol_x1,sol_x2,sol_y1,sol_y2]'))
+
+for i=1:length(sol_x1)
+       v=[x1,x2,y1,y2];
+       p=[sol_x1(i) sol_x2(i) sol_y1(i) sol_y2(i)];
+       J=jacobian([f1 f2,g1,g2],v);
+       S=subs(J,v,p);
+       E=eig(S);
+
+      if E(1)<0 && E(2)<0 &&E(3)<0 &&E(4)<0
+         
+          figure(1)
+          plot(z,sol_x2(i),'b*')
+          hold on 
+          plot([1, 1], ylim, 'k--', 'LineWidth', 2);
+          %xlim([0.0115,0.014])
+          xlabel('R_0')
+
+          ylabel('I_A')
+          title('Transcritical Bifurcation')
+          hold on
+          grid on
+
+          figure(2)
+          plot(z,sol_y2(i),'b*')
+          hold on 
+          plot([1, 1], ylim, 'k--', 'LineWidth', 2);
+        % xlim([0.0115,0.014])
+        %ylim([-400,400])
+          
+          
+        xlabel('R_0')
+          ylabel('I_H')
+          title('Transcritical Bifurcation')
+          
+          hold on
+          grid on
+      else
+
+          figure(1)
+          plot(z,sol_x2(i),'r.','MarkerSize', 12)
+          
+         %xlim([0.006,0.01])
+          grid on
+          hold on
+          
+
+          figure(2)
+          plot(z,sol_y2(i),'r.','MarkerSize', 12)
+          ylim([-200,100])
+          %ylim([-0.4,1.345])
+          title('Transcritical Bifurcation')
+         
+%ylim([-0.4 .8])
+          grid on
+          hold on
+          
+      end
+end
+
+clear
+p=0.335; b = 10000;  c = .19;lambda1=20000;lambda2=500; e = 2500000; k=60; r = .43; m = .00136; d=0.00035;l=0.39;
+A=0.0092:.00001:.0101;
+end
